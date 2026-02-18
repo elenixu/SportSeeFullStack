@@ -6,7 +6,9 @@ const StatsCard = ({ icon, value, unit, label }) => {
       elevation={0}
       sx={{
         display: 'flex',
+        fontFamily: 'Roboto',
         alignItems: 'center',
+        textAlign: 'left',
         gap: 2,
         p: 2.5,
         width: 200,
@@ -20,7 +22,9 @@ const StatsCard = ({ icon, value, unit, label }) => {
           {value}
           {unit}
         </span>
-        <span style={{ fontSize: 14, color: '#74798C' }}>{label}</span>
+        <span style={{ fontFamily: 'Roboto', fontSize: 14, color: '#74798C' }}>
+          {label}
+        </span>
       </div>
     </Card>
   );

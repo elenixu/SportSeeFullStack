@@ -1,8 +1,43 @@
 import { useEffect, useState } from 'react';
 import { getUserMainData } from '../Services/Api';
-import { Card } from '@mui/material';
-import caloriesIcon from '../assets/calories-icon.png';
+import StatsCard from './StatsCard';
 import DiagramCard from './DiagramCard';
+
+import caloriesIcon from '../assets/calories-icon.png';
+import proteinIcon from '../assets/protein-icon.png';
+import carbsIcon from '../assets/carbs-icon.png';
+import lipidIcon from '../assets/fat-icon.png';
+
+const statsConfig = [
+  {
+    key: 'calories',
+    label: 'Calories',
+    unit: 'kCal',
+    icon: caloriesIcon,
+    valueKey: 'calorieCount',
+  },
+  {
+    key: 'proteins',
+    label: 'Proteins',
+    unit: 'g',
+    icon: proteinIcon,
+    valueKey: 'proteinCount',
+  },
+  {
+    key: 'carbs',
+    label: 'Carbohydrates',
+    unit: 'g',
+    icon: carbsIcon,
+    valueKey: 'carbohydrateCount',
+  },
+  {
+    key: 'lipids',
+    label: 'Lipids',
+    unit: 'g',
+    icon: lipidIcon,
+    valueKey: 'lipidCount',
+  },
+];
 
 const Dashboard = () => {
   const [userData, setUserData] = useState(null);
@@ -10,10 +45,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getUserMainData(18);
+        const data = await getUserMainData(12);
         setUserData(data);
-        console.log(data);
-        console.log(setUserData(data));
       } catch (error) {
         console.error(error);
       }
@@ -26,63 +59,39 @@ const Dashboard = () => {
     return <h1>Loading...</h1>;
   }
 
+  const { userInfos, keyData, todayScore } = userData.data;
+
   return (
     <div>
       <h1 style={{ fontFamily: 'Roboto', fontSize: '48px', color: '#000000' }}>
-        Bonjour, {userData.data.userInfos.firstName}
+        Bonjour, {userInfos.firstName}
       </h1>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}>
+        {/* <div>{userInfos.lastName}</div>
+        <div>{userInfos.age}</div> */}
+        {/* <div>{todayScore}</div> */}
+        <DiagramCard score={userData.data.todayScore ?? userData.data.score} />
 
-      <div>{userData.data.userInfos.lastName}</div>
-      <div>{userData.data.userInfos.age}</div>
-      <div>{userData.data.todayScore}</div>
-      <div>{userData.data.keyData.calorieCount}</div>
-      <div>{userData.data.keyData.proteinCount}</div>
-      <div>{userData.data.keyData.carbohydrateCount}</div>
-      <div>{userData.data.keyData.lipidCount}</div>
-
-      <Card
-        elevation={0}
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          width: '200px',
-          height: 'auto',
-          alignItems: 'center',
-          gap: '16px',
-          padding: '20px',
-          backgroundColor: '#FBFBFB',
-        }}
-      >
-        <img
-          src={caloriesIcon}
-          alt="Calories Icon"
-          style={{ width: '60px', height: '60px' }}
-        />
+        {/* Stats Cards */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            textAlign: 'left',
+            gap: '24px',
+            marginTop: '24px',
           }}
         >
-          <div
-            style={{
-              fontFamily: 'Roboto',
-              fontSize: '20px',
-              color: '#282D30',
-              fontWeight: 'bold',
-            }}
-          >
-            {userData.data.keyData.calorieCount}cKal
-          </div>
-          <div
-            style={{ fontFamily: 'Roboto', fontSize: '14px', color: '#74798C' }}
-          >
-            Calories
-          </div>
+          {statsConfig.map((stat) => (
+            <StatsCard
+              key={stat.key}
+              icon={stat.icon}
+              label={stat.label}
+              unit={stat.unit}
+              value={keyData[stat.valueKey]}
+            />
+          ))}
         </div>
-      </Card>
-      <DiagramCard />
+      </div>
     </div>
   );
 };

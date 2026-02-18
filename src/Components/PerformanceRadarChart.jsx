@@ -4,32 +4,45 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
-  ResponsiveContainer
-} from 'recharts'
+  ResponsiveContainer,
+} from 'recharts';
 
-const data = [
-  { subject: 'Intensité', value: 80 },
-  { subject: 'Vitesse', value: 100 },
-  { subject: 'Force', value: 80 },
-  { subject: 'Endurance', value: 70 },
-  { subject: 'Energie', value: 60 },
-  { subject: 'Cardio', value: 90 }
-]
+const kindLabels = {
+  cardio: 'Cardio',
+  energy: 'Énergie',
+  endurance: 'Endurance',
+  strength: 'Force',
+  speed: 'Vitesse',
+  intensity: 'Intensité',
+};
 
-export default function PerformanceRadarChart() {
+export default function PerformanceRadarChart({ data }) {
+  if (!data) return null;
+
+  const { kind, data: performanceValues } = data;
+
+  // Format data for Recharts
+  const formattedData = performanceValues
+    .map((item) => ({
+      subject: kindLabels[kind[item.kind]],
+      value: item.value,
+    }))
+    // Figma order (clockwise)
+    .reverse();
+
   return (
     <div
       style={{
         backgroundColor: '#2c2c2c',
         borderRadius: '10px',
         padding: '1rem',
-        height: '260px',
-        width: '100%',
-        color: 'white'
+        height: '263px',
+        width: '258px',
+        color: 'white',
       }}
     >
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
+        <RadarChart cx="50%" cy="50%" outerRadius="70%" data={formattedData}>
           <PolarGrid stroke="#fff" strokeOpacity={0.2} />
           <PolarAngleAxis
             dataKey="subject"
@@ -38,7 +51,6 @@ export default function PerformanceRadarChart() {
           />
           <PolarRadiusAxis tick={false} axisLine={false} />
           <Radar
-            name="Performance"
             dataKey="value"
             stroke="#FF0101"
             fill="#FF0101"
@@ -47,5 +59,5 @@ export default function PerformanceRadarChart() {
         </RadarChart>
       </ResponsiveContainer>
     </div>
-  )
+  );
 }

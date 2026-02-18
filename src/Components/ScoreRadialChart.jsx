@@ -2,24 +2,36 @@ import {
   RadialBarChart,
   RadialBar,
   PolarAngleAxis,
-  ResponsiveContainer
-} from 'recharts'
+  ResponsiveContainer,
+} from 'recharts';
 
-const data = [{ name: 'Score', value: 12, fill: '#FF0000' }] // 12%
+export default function ScoreRadialChart({ score }) {
+  // score is between 0 and 1 → convert to %
+  const percentage = Math.round(score * 100);
 
-export default function ScoreRadialChart() {
+  const data = [
+    {
+      name: 'Score',
+      value: percentage,
+      fill: '#FF0000',
+    },
+  ];
+
   return (
     <div
       style={{
         background: '#FBFBFB',
         borderRadius: '10px',
         padding: '1rem',
-        width: '100%',
-        height: 260,
-        position: 'relative'
+        width: '258px',
+        height: '263px',
+        position: 'relative',
       }}
     >
-      <h4 style={{ color: '#20253A', fontSize: 14, marginBottom: 10 }}>Score</h4>
+      <h4 style={{ color: '#20253A', fontSize: 14, marginBottom: 10 }}>
+        Score
+      </h4>
+
       <ResponsiveContainer width="100%" height="80%">
         <RadialBarChart
           cx="50%"
@@ -32,12 +44,7 @@ export default function ScoreRadialChart() {
           data={data}
         >
           <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-          <RadialBar
-            background
-            clockWise
-            dataKey="value"
-            cornerRadius={50}
-          />
+          <RadialBar dataKey="value" cornerRadius={50} fill="#FF0000" />
         </RadialBarChart>
       </ResponsiveContainer>
 
@@ -48,13 +55,15 @@ export default function ScoreRadialChart() {
           top: '55%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          textAlign: 'center'
+          textAlign: 'center',
         }}
       >
-        <p style={{ fontSize: 20, fontWeight: 'bold', margin: 0 }}>12%</p>
+        <p style={{ fontSize: 20, fontWeight: 'bold', margin: 0 }}>
+          {percentage}%
+        </p>
         <p style={{ color: '#74798C', fontSize: 14, margin: 0 }}>de votre</p>
         <p style={{ color: '#74798C', fontSize: 14, margin: 0 }}>objectif</p>
       </div>
     </div>
-  )
+  );
 }
